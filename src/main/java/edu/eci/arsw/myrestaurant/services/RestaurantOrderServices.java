@@ -5,8 +5,12 @@
  */
 package edu.eci.arsw.myrestaurant.services;
 
+import com.sun.tools.javac.util.Pair;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,7 +21,7 @@ public interface RestaurantOrderServices {
 
     void addNewOrderToTable(Order o) throws OrderServicesException;
 
-    int calculateTableBill(int tableNumber) throws OrderServicesException;
+    void calculateTableBill(int tableNumber) throws OrderServicesException;
 
     Set<String> getAvailableProductNames();
 
@@ -26,6 +30,8 @@ public interface RestaurantOrderServices {
     Order getTableOrder(int tableNumber);
 
     Set<Integer> getTablesWithOrders();
+
+    HashMap<Pair<String, Integer>,Order> getOrderTotal() throws OrderServicesException;
 
     void releaseTable(int tableNumber) throws OrderServicesException;
     

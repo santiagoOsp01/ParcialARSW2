@@ -16,6 +16,7 @@
  */
 package edu.eci.arsw.myrestaurant.restcontrollers;
 
+import edu.eci.arsw.myrestaurant.RestapidemoApplication;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
@@ -23,6 +24,10 @@ import edu.eci.arsw.myrestaurant.services.RestaurantOrderServicesStub;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +39,23 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author hcadavid
  */
+@RestController
+@RequestMapping("/orders")
 public class OrdersAPIController {
+
+    @Autowired
+    RestaurantOrderServicesStub rs;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> gettable(){
+        try {
+            //obtener datos que se enviarán a través del API
+            return new ResponseEntity<>(rs.getOrderTotal(), HttpStatus.ACCEPTED);
+        } catch (Exception ex) {
+            Logger.getLogger(RestapidemoApplication.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("Error ",HttpStatus.NOT_FOUND);
+        }
+    }
 
     
 }

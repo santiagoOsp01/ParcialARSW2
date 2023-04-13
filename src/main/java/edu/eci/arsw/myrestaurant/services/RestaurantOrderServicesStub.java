@@ -1,19 +1,31 @@
 package edu.eci.arsw.myrestaurant.services;
 
 
+import com.sun.tools.javac.util.Pair;
+import edu.eci.arsw.myrestaurant.beans.impl.BasicBillCalculator;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
 import edu.eci.arsw.myrestaurant.beans.BillCalculator;
 import edu.eci.arsw.myrestaurant.model.ProductType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Service
 public class RestaurantOrderServicesStub implements RestaurantOrderServices {
 
-    
+    @Autowired
     BillCalculator calc = null;
+
+    private static final Map<String, RestaurantProduct> productsMap;
+
+    private static final Map<Integer, Order> tableOrders;
+
+    private HashMap<Pair<String, Integer>,Order> orders = new HashMap<>();
 
     public RestaurantOrderServicesStub() {
     }
@@ -51,6 +63,15 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
     }
 
     @Override
+    public HashMap<Pair<String, Integer>,Order> getOrderTotal() throws OrderServicesException {
+
+        calculateTableBill(1);
+        calculateTableBill(3);
+
+        return orders;
+    }
+
+    @Override
     public void addNewOrderToTable(Order o) throws OrderServicesException {
         if (tableOrders.containsKey(o.getTableNumber())) {
             throw new OrderServicesException("La mesa tiene una orden abierta. Debe "
@@ -72,17 +93,14 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
     }
 
     @Override
-    public int calculateTableBill(int tableNumber) throws OrderServicesException {
+    public void calculateTableBill(int tableNumber) throws OrderServicesException {
         if (!tableOrders.containsKey(tableNumber)) {
             throw new OrderServicesException("Mesa inexistente o ya liberada:" + tableNumber);
         } else {
-            return calc.calculateBill(tableOrders.get(tableNumber), productsMap);
+            orders.put(new Pair<>("Precio",calc.calculateBill(tableOrders.get(tableNumber), productsMap)),tableOrders.get(tableNumber));
         }
     }
 
-    private static final Map<String, RestaurantProduct> productsMap;
-
-    private static final Map<Integer, Order> tableOrders;
     
 
     static {
