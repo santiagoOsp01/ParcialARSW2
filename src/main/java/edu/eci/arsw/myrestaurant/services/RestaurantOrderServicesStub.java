@@ -64,10 +64,10 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
 
     @Override
     public HashMap<Pair<String, Integer>,Order> getOrderTotal() throws OrderServicesException {
-
-        calculateTableBill(1);
-        calculateTableBill(3);
-
+        Set<Integer> keys = tableOrders.keySet();
+        for ( Integer key : keys ) {
+            calculateTableBill(key);
+        }
         return orders;
     }
 
